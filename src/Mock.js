@@ -85,18 +85,21 @@ export default class Mock extends React.Component {
         <div className="EventsList">
           <BonusEvent
             isActive
+            sponsor="Sports Basement"
             dayOfWeek="Sunday,"
             dayDate="April 14"
             time="6:00AM to 11:00AM"
             bonus="10%"
           />
           <BonusEvent
+            sponsor="Cupertino High School"
             dayOfWeek="Wednesday,"
             dayDate="April 17"
             time="7:00AM to 9:00AM"
             bonus="50%"
           />
           <BonusEvent
+            sponsor="AMC"
             dayOfWeek="Friday,"
             dayDate="April 19"
             time="7:00AM to 8:30AM"
@@ -427,7 +430,7 @@ const Pages = {
   Rewards: 2,
 };
 
-function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
+function BonusEvent({ isActive, sponsor, dayOfWeek, dayDate, time, bonus }) {
   return (
     <div className={isActive ? "Event Event--active" : "Event"}>
       <div
@@ -444,6 +447,7 @@ function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
       </div>
 
       <div className="EventTimeContainer">
+        <div className="EventSponsor">{sponsor}</div>
         <div className="EventDayOfWeek">{dayOfWeek}</div>
         <div className="EventDayDate">{dayDate}</div>
         <div className="EventTime">{time}</div>
