@@ -23,7 +23,7 @@ export default class Mock extends React.Component {
           sponsor: "Cupertino Library",
           name: "Free book",
           imgURL: catchingFireURL,
-          metersEarned: 2491,
+          metersEarned: 2499,
           metersRequired: 2500,
         },
         {
@@ -42,6 +42,7 @@ export default class Mock extends React.Component {
         },
       ],
       currentRewardIndex: 1,
+      isCelebratingCompletion: false,
       page: Pages.Map,
       walkStatus: WalkStatus.Stationary,
       now: Date.now(),
@@ -108,6 +109,79 @@ export default class Mock extends React.Component {
   }
 
   renderMapPage() {
+    if (this.state.isCelebratingCompletion) {
+      return this.renderCelebration();
+    } else {
+      return this.renderNormalMap();
+    }
+  }
+
+  renderCelebration() {
+    const currentReward = this.state.rewards[this.state.currentRewardIndex];
+    return (
+      <div className="Mock">
+        {currentReward && (
+          <div className="MeterDisplay">
+            <div className="MeterBarBackground MeterBarBackground--celebration">
+              <div className="MeterNumbers">
+                {Math.min(
+                  Math.floor(currentReward.metersEarned),
+                  currentReward.metersRequired
+                )}
+                /{currentReward.metersRequired}m
+              </div>
+
+              <div
+                className="MeterBarForeground"
+                style={{
+                  width:
+                    (currentReward.metersEarned /
+                      currentReward.metersRequired) *
+                      100 +
+                    "%",
+                }}
+              />
+            </div>
+            <img
+              className="MeterRewardImage--celebration"
+              src={currentReward.imgURL}
+              alt={currentReward.name}
+            />
+          </div>
+        )}
+
+        <div className="Body Body--celebration">
+          <div className="CelebrationBodyOverlay" />
+          <div className="MapContainer">
+            <Map
+              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNBvuTeyVOsMmyT1Y3PHtNccpLiiUNuxw"
+              loadingElement={<div style={{ height: `100%` }} />}
+              containerElement={<div style={{ height: `400px` }} />}
+              mapElement={<div style={{ height: `100%` }} />}
+              markerPosition={this.state.markerPosition}
+            />
+          </div>
+        </div>
+        <div
+          className="WalkingOutDetector"
+          onTouchStart={this.onWalkingOutDetectorActivated}
+          onTouchEnd={this.onWalkingOutDetectorDeactivated}
+          onMouseDown={this.onWalkingOutDetectorActivated}
+          onMouseUp={this.onWalkingOutDetectorDeactivated}
+        />
+        <div
+          className="WalkingInDetector"
+          onTouchStart={this.onWalkingInDetectorActivated}
+          onTouchEnd={this.onWalkingInDetectorDeactivated}
+          onMouseDown={this.onWalkingInDetectorActivated}
+          onMouseUp={this.onWalkingInDetectorDeactivated}
+        />
+        {this.renderNavBar()}
+      </div>
+    );
+  }
+
+  renderNormalMap() {
     const currentReward = this.state.rewards[this.state.currentRewardIndex];
     return (
       <div className="Mock">
@@ -115,8 +189,11 @@ export default class Mock extends React.Component {
           <div className="MeterDisplay">
             <div className="MeterBarBackground">
               <div className="MeterNumbers">
-                {Math.min(Math.floor(currentReward.metersEarned), currentReward.metersRequired)}/
-                {currentReward.metersRequired}m
+                {Math.min(
+                  Math.floor(currentReward.metersEarned),
+                  currentReward.metersRequired
+                )}
+                /{currentReward.metersRequired}m
               </div>
 
               <div
@@ -174,7 +251,11 @@ export default class Mock extends React.Component {
       <div className="Mock">
         <div className="RewardsList">
           {this.state.rewards.map((reward, i) => (
-            <Reward reward={reward} isSelected={this.state.currentRewardIndex===i}onClick={()=>this.onSelectRewardIndex(i)} />
+            <Reward
+              reward={reward}
+              isSelected={this.state.currentRewardIndex === i}
+              onClick={() => this.onSelectRewardIndex(i)}
+            />
           ))}
         </div>
         {this.renderNavBar()}
@@ -187,24 +268,57 @@ export default class Mock extends React.Component {
       this.incrementMetersWalked();
       const now = Date.now();
       this.setState((prevState) => {
-        if (prevState.walkStatus === WalkStatus.Out || prevState.walkStatus === WalkStatus.In) {
+        if (
+          prevState.walkStatus === WalkStatus.Out ||
+          prevState.walkStatus === WalkStatus.In
+        ) {
           const dtInSeconds = (now - prevState.now) / 1e3;
           const deltaMeters = METERS_PER_SEC * dtInSeconds;
-          return {
-            now,
-            rewards: prevState.rewards.map((reward, i) => {
-              if (i !== prevState.currentRewardIndex) {
-                return reward;
+          const rewards = prevState.rewards.map((reward, i) => {
+            if (i !== prevState.currentRewardIndex) {
+              return reward;
+            } else {
+              const metersEarned = reward.metersEarned + deltaMeters;
+              if (metersEarned < reward.metersRequired) {
+                return { ...reward, metersEarned };
               } else {
                 return {
                   ...reward,
-                  metersEarned: reward.metersEarned + deltaMeters,
+                  metersEarned,
+                  FLAG_isAppCelebratingCompletion: true,
                 };
               }
-            }),
+            }
+          });
+          const isCelebratingCompletion = rewards.some(
+            (reward) => reward.FLAG_isAppCelebratingCompletion
+          );
+          if (isCelebratingCompletion) {
+            setTimeout(() => {
+              this.setState((prevState) => ({
+                isCelebratingCompletion: false,
+                page: Pages.Rewards,
+                currentRewardIndex: prevState.rewards.findIndex(
+                  (reward) => reward.metersEarned <= reward.metersRequired
+                ),
+              }));
+            }, 15e3);
+          }
+          return {
+            now,
+            rewards,
+            isCelebratingCompletion,
             markerPosition: {
-              lat: prevState.markerPosition.lat + (prevState.walkStatus === WalkStatus.Out ? toOutLatitude(deltaMeters) : -toOutLatitude(deltaMeters)),
-              lng: prevState.markerPosition.lng + (prevState.walkStatus === WalkStatus.Out ? toOutLongitude(deltaMeters) : -toOutLongitude(deltaMeters)),
+              lat:
+                prevState.markerPosition.lat +
+                (prevState.walkStatus === WalkStatus.Out
+                  ? toOutLatitude(deltaMeters)
+                  : -toOutLatitude(deltaMeters)),
+              lng:
+                prevState.markerPosition.lng +
+                (prevState.walkStatus === WalkStatus.Out
+                  ? toOutLongitude(deltaMeters)
+                  : -toOutLongitude(deltaMeters)),
             },
           };
         } else {
@@ -344,19 +458,29 @@ function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
   );
 }
 
-function Reward({ reward,isSelected, onClick }) {
+function Reward({ reward, isSelected, onClick }) {
   const { sponsor, name, imgURL, metersEarned, metersRequired } = reward;
+  const isComplete = metersEarned >= metersRequired;
   return (
     <div
-      className={isSelected?"Reward Reward--selected":"Reward"}
-      onClick={onClick}
+      className={isSelected ? "Reward Reward--selected" : "Reward"}
+      onClick={isComplete ? NOOP : onClick}
     >
       <div className="RewardInfoContainer">
-        <div className="RewardName">{name}</div>
+        <div className="RewardName">
+          {isComplete ? (
+            <React.Fragment>
+              {name}
+              <Checkmark />
+            </React.Fragment>
+          ) : (
+            name
+          )}
+        </div>
         <div className="RewardSponsor">{sponsor}</div>
         <div className="RewardProgressBarBackground">
           <div className="RewardProgressBarNumbers">
-            {Math.floor(metersEarned)}/{metersRequired}m
+            {Math.min(Math.floor(metersEarned), metersRequired)}/{metersRequired}m
           </div>
           <div
             className="RewardProgressBarForeground"
@@ -371,4 +495,10 @@ function Reward({ reward,isSelected, onClick }) {
       </div>
     </div>
   );
+}
+
+function NOOP() {}
+
+function Checkmark() {
+  return <span className="Checkmark">✓</span>;
 }
