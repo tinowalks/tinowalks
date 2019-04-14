@@ -157,16 +157,27 @@
 
 .RewardInfoContainer {
   top: 0;
-  left: 25%;
+  left: 2vw;
+  width: 73%;
   position: absolute;
+}
+
+.RewardImage {
+  position: absolute;
+  margin-top: 1vh;
+  top: 0;
+  left: 73%;
+  width: 23.75vw;
+  height: 23.75vw;
+  border-radius: 23.75vw;
+  border: 1px solid #ccc;
+  overflow: hidden;
 }
 
 
 .RewardImage img {
-  margin-top: 4.5vh;
-  margin-left: 1vw;
-  margin-right: 2vw;
-  width: 20vw;
+  max-height: 23.75vw;
+  border-radius: 23.75vw;
 }
 
 .RewardName {
@@ -176,6 +187,7 @@
 
 .RewardSponsor {
   font-size: 3.5vh;
+  color: #555;
 }
 
 .RewardProgressBarBackground {

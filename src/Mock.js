@@ -9,7 +9,7 @@ import {
 import hourglassURL from "./images/hourglass.svg";
 import compassURL from "./images/compass.png";
 import trophyURL from "./images/trophy.png";
-import catchingFireURL from "./images/catchingFire.jpg";
+import catchingFireURL from "./images/catchingFire.png";
 import frozenYogurtURL from "./images/frozenYogurt.png";
 import frappucinoURL from "./images/frappucino.jpg";
 
@@ -323,9 +323,7 @@ function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
 function Reward({ sponsor, name, imgURL, metersEarned, metersRequired }) {
   return (
     <div className="Reward">
-      <div className="RewardImage">
-        <img src={imgURL} alt={name} />
-      </div>
+     
       <div className="RewardInfoContainer">
         <div className="RewardName">{name}</div>
         <div className="RewardSponsor">{sponsor}</div>
@@ -340,6 +338,9 @@ function Reward({ sponsor, name, imgURL, metersEarned, metersRequired }) {
             />
           
         </div>
+      </div>
+      <div className="RewardImage">
+        <img src={imgURL} alt={name} />
       </div>
     </div>
   );
