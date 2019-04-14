@@ -123,9 +123,7 @@ export default class Mock extends React.Component {
         {currentReward && (
           <div className="MeterDisplay">
             <div className="MeterBarBackground MeterBarBackground--celebration">
-              <div className="MeterNumbers">
-                Challenge complete!
-              </div>
+              <div className="MeterNumbers">Challenge complete!</div>
 
               <div
                 className="MeterBarForeground"
@@ -474,12 +472,23 @@ function Reward({ reward, isSelected, onClick }) {
           )}
         </div>
         <div className="RewardSponsor">{sponsor}</div>
-        <div className="RewardProgressBarBackground">
+        <div
+          className={
+            isComplete
+              ? "RewardProgressBarBackground RewardProgressBarBackground--complete"
+              : "RewardProgressBarBackground"
+          }
+        >
           <div className="RewardProgressBarNumbers">
-            {Math.min(Math.floor(metersEarned), metersRequired)}/{metersRequired}m
+            {Math.min(Math.floor(metersEarned), metersRequired)}/
+            {metersRequired}m
           </div>
           <div
-            className="RewardProgressBarForeground"
+            className={
+              isComplete
+                ? "RewardProgressBarForeground RewardProgressBarForeground--complete"
+                : "RewardProgressBarForeground"
+            }
             style={{
               width: (metersEarned / metersRequired) * 100 + "%",
             }}

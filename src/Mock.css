@@ -74,7 +74,6 @@
   color: #eee;
 }
 
-
 @keyframes celebration-flash {
   0% {
     box-shadow: 0 0 4vh 0.5vh orange;
@@ -247,6 +246,14 @@
   top: 0;
 }
 
+.RewardProgressBarBackground--complete {
+  color: #eee;
+}
+
+.RewardProgressBarForeground--complete {
+  background-color: green;
+}
+
 .RewardProgressBarNumbers {
   font-size: 5vh;
   position: relative;
@@ -305,7 +312,7 @@
   z-index: 6;
 
   animation: expand 4s linear 1 forwards running,
-    celebration-flash 0.7s linear  infinite running;
+    celebration-flash 0.7s linear infinite running;
 }
 
 @keyframes expand {
@@ -315,7 +322,6 @@
     right: 2vw;
     top: 0;
     transform: translate(0%, 0%);
-    
   }
 
   50% {
@@ -333,7 +339,6 @@
     right: 50%;
     top: 40%;
     transform: translate(50%, -50%);
-    
   }
 }
 
