@@ -390,7 +390,7 @@ const Map = withScriptjs(
   withGoogleMap(({ markerPosition }) => (
     <GoogleMap
       defaultZoom={18}
-      defaultCenter={{ lat: 37.3260116, lng: -122.0428078 }}
+      defaultCenter={INITIAL_MARKER_POSITION}
     >
       {<Marker position={markerPosition} />}
     </GoogleMap>
@@ -407,7 +407,7 @@ function toOutLatitude(meters) {
 
 const DEG_METER_CONVERSION = 1 / 221200;
 
-const INITIAL_MARKER_POSITION = { lat: 37.3260116, lng: -122.0428078 };
+const INITIAL_MARKER_POSITION = { lat: 37.326011, lng: -122.042402 };
 
 const WalkStatus = {
   Stationary: 0,
