@@ -15,6 +15,7 @@ export default class Mock extends React.Component {
     super();
 
     this.state = {
+      page: Pages.Map,
       walkStatus: WalkStatus.Stationary,
       now: Date.now(),
       metersWalked: 0,
@@ -72,13 +73,34 @@ export default class Mock extends React.Component {
           onMouseUp={this.onWalkingInDetectorDeactivated}
         />
         <div className="Nav">
-          <div className="NavIcon">
+          <div
+            className={
+              this.state.page === Pages.Events
+                ? "NavIcon NavIcon--active"
+                : "NavIcon"
+            }
+            onClick={this.navigatorFactory(Pages.Events)}
+          >
             <img src={hourglassURL} alt="Hourglass" />
           </div>
-          <div className="NavIcon NavIcon--active">
+          <div
+            className={
+              this.state.page === Pages.Map
+                ? "NavIcon NavIcon--active"
+                : "NavIcon"
+            }
+            onClick={this.navigatorFactory(Pages.Map)}
+          >
             <img src={compassURL} alt="Compass" />
           </div>
-          <div className="NavIcon">
+          <div
+            className={
+              this.state.page === Pages.Rewards
+                ? "NavIcon NavIcon--active"
+                : "NavIcon"
+            }
+            onClick={this.navigatorFactory(Pages.Rewards)}
+          >
             <img src={trophyURL} alt="Trophy" />
           </div>
         </div>
@@ -137,6 +159,12 @@ export default class Mock extends React.Component {
   onWalkingInDetectorDeactivated() {
     this.setState({ walkStatus: WalkStatus.Stationary });
   }
+
+  navigatorFactory(page) {
+    return () => {
+      this.setState({ page });
+    };
+  }
 }
 
 const METERS_PER_SEC = 1.4;
@@ -171,3 +199,9 @@ const WalkStatus = {
 };
 
 const OUT_DIR = 0.8 * Math.PI;
+
+const Pages = {
+  Events: 0,
+  Map: 1,
+  Rewards: 2,
+};
