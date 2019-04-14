@@ -159,20 +159,7 @@ export default class Mock extends React.Component {
             />
           </div>
         </div>
-        <div
-          className="WalkingOutDetector"
-          onTouchStart={this.onWalkingOutDetectorActivated}
-          onTouchEnd={this.onWalkingOutDetectorDeactivated}
-          onMouseDown={this.onWalkingOutDetectorActivated}
-          onMouseUp={this.onWalkingOutDetectorDeactivated}
-        />
-        <div
-          className="WalkingInDetector"
-          onTouchStart={this.onWalkingInDetectorActivated}
-          onTouchEnd={this.onWalkingInDetectorDeactivated}
-          onMouseDown={this.onWalkingInDetectorActivated}
-          onMouseUp={this.onWalkingInDetectorDeactivated}
-        />
+        
         {this.renderNavBar()}
       </div>
     );
@@ -213,7 +200,6 @@ export default class Mock extends React.Component {
         )}
 
         <div className="Body">
-          {" "}
           <div className="MapContainer">
             <Map
               googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNBvuTeyVOsMmyT1Y3PHtNccpLiiUNuxw"
@@ -223,8 +209,7 @@ export default class Mock extends React.Component {
               markerPosition={this.state.markerPosition}
             />
           </div>
-        </div>
-        <div
+          <div
           className="WalkingOutDetector"
           onTouchStart={this.onWalkingOutDetectorActivated}
           onTouchEnd={this.onWalkingOutDetectorDeactivated}
@@ -238,6 +223,8 @@ export default class Mock extends React.Component {
           onMouseDown={this.onWalkingInDetectorActivated}
           onMouseUp={this.onWalkingInDetectorDeactivated}
         />
+        </div>
+        
         {this.renderNavBar()}
       </div>
     );
@@ -294,6 +281,7 @@ export default class Mock extends React.Component {
             setTimeout(() => {
               this.setState((prevState) => ({
                 isCelebratingCompletion: false,
+                walkStatus: WalkStatus.Stationary,
                 page: Pages.Rewards,
                 currentRewardIndex: prevState.rewards.findIndex(
                   (reward) => reward.metersEarned <= reward.metersRequired
@@ -342,9 +330,14 @@ export default class Mock extends React.Component {
   }
 
   navigatorFactory(page) {
-    return () => {
-      this.setState({ page });
-    };
+    if (this.state.isCelebratingCompletion) {
+      return NOOP;
+    } else {
+      return () => {
+        this.setState({ page });
+      };
+    }
+    
   }
 
   renderNavBar() {

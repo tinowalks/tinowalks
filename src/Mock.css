@@ -13,7 +13,7 @@
 }
 
 .Body {
-  height: 60vh;
+  height: 75vh;
   overflow: auto;
   position: relative;
 }
@@ -380,4 +380,9 @@
   font-size: 5vh;
   border-radius: 10vh;
   margin-left: 1vw;
+}
+
+.MapContainer {
+  height: 60vh;
+  overflow: hidden;
 }
