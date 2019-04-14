@@ -339,6 +339,60 @@
     transform: translate(0%, 0%);
   }
 
+  5% {
+    height: 12vh;
+    top: -1vh;
+    right: calc(2vw - 1vh);
+  }
+
+  10% {
+    height: 10vh;
+    top: 0;
+    right: 2vw;
+  }
+
+  15% {
+    height: 12vh;
+    top: -1vh;
+    right: calc(2vw - 1vh);
+  }
+
+  20% {
+    height: 10vh;
+    top: 0;
+    right: 2vw;
+  }
+
+  25% {
+    height: 12vh;
+    top: -1vh;
+    right: calc(2vw - 1vh);
+  }
+
+  30% {
+    height: 10vh;
+    top: 0;
+    right: 2vw;
+  }
+
+  35% {
+    height: 12vh;
+    top: -1vh;
+    right: calc(2vw - 1vh);
+  }
+
+  40% {
+    height: 10vh;
+    top: 0;
+    right: 2vw;
+  }
+
+  45% {
+    height: 12vh;
+    top: -1vh;
+    right: calc(2vw - 1vh);
+  }
+
   50% {
     height: 10vh;
     border-radius: 10vh;
