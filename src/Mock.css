@@ -174,7 +174,6 @@
   overflow: hidden;
 }
 
-
 .RewardImage img {
   max-height: 23.75vw;
   border-radius: 23.75vw;
@@ -196,7 +195,7 @@
   border-radius: 2vw;
   margin-top: 5vh;
   background-color: orangered;
-  position:relative;
+  position: relative;
   overflow: hidden;
   text-align: center;
   line-height: 5vh;
@@ -214,4 +213,48 @@
   font-size: 5vh;
   position: relative;
   z-index: 1;
+}
+
+.MeterRewardImage {
+  position: absolute;
+  height: 10vh;
+  right: 2vw;
+  top: 0;
+  animation: tantalize 4s linear infinite running;
+}
+
+@keyframes tantalize {
+  0% {
+    top: 0;
+  }
+  1% {
+    top: -0.6615000000000001vh;
+  }
+  2% {
+    top: -1.1760000000000002vh;
+  }
+  3% {
+    top: -1.5435vh;
+  }
+  4% {
+    top: -1.7640000000000002vh;
+  }
+  5% {
+    top: -1.8375000000000001vh;
+  }
+  6% {
+    top: -1.7640000000000002vh;
+  }
+  7% {
+    top: -1.5435000000000003vh;
+  }
+  8% {
+    top: -1.1760000000000002vh;
+  }
+  9% {
+    top: -0.6615000000000002vh;
+  }
+  10% {
+    top: 0vh;
+  }
 }

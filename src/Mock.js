@@ -18,6 +18,13 @@ export default class Mock extends React.Component {
     super();
 
     this.state = {
+      currentReward: {
+        sponsor: "Yogurtland",
+        name: "50% off your next cup",
+        imgURL: frozenYogurtURL,
+        metersEarned: 200,
+        metersRequired: 1000,
+      },
       page: Pages.Map,
       walkStatus: WalkStatus.Stationary,
       now: Date.now(),
@@ -88,6 +95,7 @@ export default class Mock extends React.Component {
             <div className="MeterNumbers">
               {Math.floor(this.state.metersWalked)}/{this.state.metersRequired}m
             </div>
+
             <div
               className="MeterBarForeground"
               style={{
@@ -97,6 +105,13 @@ export default class Mock extends React.Component {
               }}
             />
           </div>
+          {this.state.currentReward && (
+            <img
+              className="MeterRewardImage"
+              src={this.state.currentReward.imgURL}
+              alt={this.state.currentReward.name}
+            />
+          )}
         </div>
         <div className="Body">
           {" "}
@@ -134,25 +149,31 @@ export default class Mock extends React.Component {
       <div className="Mock">
         <div className="RewardsList">
           <Reward
-            sponsor="Cupertino Library"
-            name="Free book"
-            imgURL={catchingFireURL}
-            metersEarned={672}
-            metersRequired={1000}
+            reward={{
+              sponsor: "Cupertino Library",
+              name: "Free book",
+              imgURL: catchingFireURL,
+              metersEarned: 672,
+              metersRequired: 1000,
+            }}
           />
           <Reward
-            sponsor="Yogurtland"
-            name="50% off your next cup"
-            imgURL={frozenYogurtURL}
-            metersEarned={200}
-            metersRequired={1000}
+            reward={{
+              sponsor: "Yogurtland",
+              name: "50% off your next cup",
+              imgURL: frozenYogurtURL,
+              metersEarned: 200,
+              metersRequired: 1000,
+            }}
           />
           <Reward
-            sponsor="Starbucks"
-            name="Free coffee"
-            imgURL={frappucinoURL}
-            metersEarned={672}
-            metersRequired={1000}
+            reward={{
+              sponsor: "Starbucks",
+              name: "Free coffee",
+              imgURL: frappucinoURL,
+              metersEarned: 672,
+              metersRequired: 1000,
+            }}
           />
         </div>
         {this.renderNavBar()}
@@ -320,23 +341,23 @@ function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
   );
 }
 
-function Reward({ sponsor, name, imgURL, metersEarned, metersRequired }) {
+function Reward({ reward }) {
+  const { sponsor, name, imgURL, metersEarned, metersRequired } = reward;
   return (
     <div className="Reward">
-     
       <div className="RewardInfoContainer">
         <div className="RewardName">{name}</div>
         <div className="RewardSponsor">{sponsor}</div>
         <div className="RewardProgressBarBackground">
           <div className="RewardProgressBarNumbers">
-          {Math.floor(metersEarned)}/{metersRequired}m</div>
-            <div
-              className="RewardProgressBarForeground"
-              style={{
-                width: (metersEarned / metersRequired) * 100 + "%",
-              }}
-            />
-          
+            {Math.floor(metersEarned)}/{metersRequired}m
+          </div>
+          <div
+            className="RewardProgressBarForeground"
+            style={{
+              width: (metersEarned / metersRequired) * 100 + "%",
+            }}
+          />
         </div>
       </div>
       <div className="RewardImage">
