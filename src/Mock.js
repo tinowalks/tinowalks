@@ -19,6 +19,7 @@ export default class Mock extends React.Component {
       walkStatus: WalkStatus.Stationary,
       now: Date.now(),
       metersWalked: 0,
+      metersRequired: 100,
       markerPosition: INITIAL_MARKER_POSITION,
     };
 
@@ -35,16 +36,19 @@ export default class Mock extends React.Component {
   componentDidMount() {
     this.incrementMetersWalked();
   }
-
+  // You've traveled:{" "}
+  // {Math.floor(this.state.metersWalked)
+  //   .toString()
+  //   .padStart(5, "0")}
+  // m
   render() {
     return (
       <div className="Mock">
         <div className="MeterDisplay">
-          You've traveled:{" "}
-          {Math.floor(this.state.metersWalked)
-            .toString()
-            .padStart(5, "0")}
-          m
+          <div className="MeterBarBackground">
+          <div className="MeterNumbers">{Math.floor(this.state.metersWalked)}/{this.state.metersRequired}m</div>
+            <div className="MeterBarForeground" style={{width: this.state.metersWalked / this.state.metersRequired * 100 + '%'}} />
+          </div>
         </div>
         <div className="Body">
           {" "}
@@ -72,38 +76,7 @@ export default class Mock extends React.Component {
           onMouseDown={this.onWalkingInDetectorActivated}
           onMouseUp={this.onWalkingInDetectorDeactivated}
         />
-        <div className="Nav">
-          <div
-            className={
-              this.state.page === Pages.Events
-                ? "NavIcon NavIcon--active"
-                : "NavIcon"
-            }
-            onClick={this.navigatorFactory(Pages.Events)}
-          >
-            <img src={hourglassURL} alt="Hourglass" />
-          </div>
-          <div
-            className={
-              this.state.page === Pages.Map
-                ? "NavIcon NavIcon--active"
-                : "NavIcon"
-            }
-            onClick={this.navigatorFactory(Pages.Map)}
-          >
-            <img src={compassURL} alt="Compass" />
-          </div>
-          <div
-            className={
-              this.state.page === Pages.Rewards
-                ? "NavIcon NavIcon--active"
-                : "NavIcon"
-            }
-            onClick={this.navigatorFactory(Pages.Rewards)}
-          >
-            <img src={trophyURL} alt="Trophy" />
-          </div>
-        </div>
+        {this.renderNavBar()}
       </div>
     );
   }
@@ -164,6 +137,43 @@ export default class Mock extends React.Component {
     return () => {
       this.setState({ page });
     };
+  }
+
+  renderNavBar() {
+    return (
+      <div className="Nav">
+        <div
+          className={
+            this.state.page === Pages.Events
+              ? "NavIcon NavIcon--active"
+              : "NavIcon"
+          }
+          onClick={this.navigatorFactory(Pages.Events)}
+        >
+          <img src={hourglassURL} alt="Hourglass" />
+        </div>
+        <div
+          className={
+            this.state.page === Pages.Map
+              ? "NavIcon NavIcon--active"
+              : "NavIcon"
+          }
+          onClick={this.navigatorFactory(Pages.Map)}
+        >
+          <img src={compassURL} alt="Compass" />
+        </div>
+        <div
+          className={
+            this.state.page === Pages.Rewards
+              ? "NavIcon NavIcon--active"
+              : "NavIcon"
+          }
+          onClick={this.navigatorFactory(Pages.Rewards)}
+        >
+          <img src={trophyURL} alt="Trophy" />
+        </div>
+      </div>
+    );
   }
 }
 
