@@ -11,7 +11,7 @@ import compassURL from "./images/compass.png";
 import trophyURL from "./images/trophy.png";
 import catchingFireURL from "./images/catchingFire.png";
 import frozenYogurtURL from "./images/frozenYogurt.png";
-import frappucinoURL from "./images/frappucino.jpg";
+import frappuccinoURL from "./images/frappuccino.png";
 
 export default class Mock extends React.Component {
   constructor() {
@@ -36,18 +36,17 @@ export default class Mock extends React.Component {
         {
           sponsor: "Starbucks",
           name: "Free coffee",
-          imgURL: frappucinoURL,
+          imgURL: frappuccinoURL,
           metersEarned: 672,
           metersRequired: 1250,
         },
       ],
       currentRewardIndex: 0,
+      hasSetTimeout: false,
       isCelebratingCompletion: false,
       page: Pages.Map,
       walkStatus: WalkStatus.Stationary,
       now: Date.now(),
-      metersWalked: 0,
-      metersRequired: 100,
       markerPosition: INITIAL_MARKER_POSITION,
     };
 
@@ -250,8 +249,11 @@ export default class Mock extends React.Component {
   incrementMetersWalked() {
     requestAnimationFrame(() => {
       this.incrementMetersWalked();
+
       const now = Date.now();
       this.setState((prevState) => {
+        
+
         if (
           prevState.walkStatus === WalkStatus.Out ||
           prevState.walkStatus === WalkStatus.In
@@ -277,9 +279,12 @@ export default class Mock extends React.Component {
           const isCelebratingCompletion = rewards.some(
             (reward) => reward.FLAG_isAppCelebratingCompletion
           );
-          if (isCelebratingCompletion) {
+          const shouldSetTimeout = isCelebratingCompletion && !prevState.hasSetTimeout;
+          if (shouldSetTimeout) {
+            
             setTimeout(() => {
               this.setState((prevState) => ({
+                hasSetTimeout: false,
                 isCelebratingCompletion: false,
                 walkStatus: WalkStatus.Stationary,
                 page: Pages.Rewards,
@@ -290,6 +295,7 @@ export default class Mock extends React.Component {
             }, 15e3);
           }
           return {
+            hasSetTimeout: shouldSetTimeout || isCelebratingCompletion,
             now,
             rewards,
             isCelebratingCompletion,
@@ -307,6 +313,9 @@ export default class Mock extends React.Component {
             },
           };
         } else {
+          if (prevState.currentRewardIndex !== this.state.currentRewardIndex) {
+            console.log('bang')
+          }
           return { ...prevState, now };
         }
       });
@@ -504,3 +513,4 @@ function NOOP() {}
 function Checkmark() {
   return <span className="Checkmark">✓</span>;
 }
+
