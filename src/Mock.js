@@ -187,7 +187,7 @@ export default class Mock extends React.Component {
       this.incrementMetersWalked();
       const now = Date.now();
       this.setState((prevState) => {
-        if (prevState.walkStatus === WalkStatus.Out) {
+        if (prevState.walkStatus === WalkStatus.Out || prevState.walkStatus === WalkStatus.In) {
           const dtInSeconds = (now - prevState.now) / 1e3;
           const deltaMeters = METERS_PER_SEC * dtInSeconds;
           return {
@@ -203,29 +203,8 @@ export default class Mock extends React.Component {
               }
             }),
             markerPosition: {
-              lat: prevState.markerPosition.lat + toOutLatitude(deltaMeters),
-              lng: prevState.markerPosition.lng + toOutLongitude(deltaMeters),
-            },
-          };
-        } else if (prevState.walkStatus === WalkStatus.In) {
-          const dtInSeconds = (now - prevState.now) / 1e3;
-          const deltaMeters = METERS_PER_SEC * dtInSeconds;
-          const metersWalked = prevState.metersWalked + deltaMeters;
-          return {
-            now,
-            rewards: prevState.rewards.map((reward, i) => {
-              if (i !== prevState.currentRewardIndex) {
-                return reward;
-              } else {
-                return {
-                  ...reward,
-                  metersEarned: reward.metersEarned + deltaMeters,
-                };
-              }
-            }),
-            markerPosition: {
-              lat: prevState.markerPosition.lat - toOutLatitude(deltaMeters),
-              lng: prevState.markerPosition.lng - toOutLongitude(deltaMeters),
+              lat: prevState.markerPosition.lat + (prevState.walkStatus === WalkStatus.Out ? toOutLatitude(deltaMeters) : -toOutLatitude(deltaMeters)),
+              lng: prevState.markerPosition.lng + (prevState.walkStatus === WalkStatus.Out ? toOutLongitude(deltaMeters) : -toOutLongitude(deltaMeters)),
             },
           };
         } else {
