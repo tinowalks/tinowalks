@@ -174,7 +174,7 @@ export default class Mock extends React.Component {
       <div className="Mock">
         <div className="RewardsList">
           {this.state.rewards.map((reward, i) => (
-            <Reward reward={reward} onClick={()=>this.onSelectRewardIndex(i)} />
+            <Reward reward={reward} isSelected={this.state.currentRewardIndex===i}onClick={()=>this.onSelectRewardIndex(i)} />
           ))}
         </div>
         {this.renderNavBar()}
@@ -365,11 +365,11 @@ function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
   );
 }
 
-function Reward({ reward, onClick }) {
+function Reward({ reward,isSelected, onClick }) {
   const { sponsor, name, imgURL, metersEarned, metersRequired } = reward;
   return (
     <div
-      className="Reward"
+      className={isSelected?"Reward Reward--selected":"Reward"}
       onClick={onClick}
     >
       <div className="RewardInfoContainer">
