@@ -18,13 +18,30 @@ export default class Mock extends React.Component {
     super();
 
     this.state = {
-      currentReward: {
-        sponsor: "Yogurtland",
-        name: "50% off your next cup",
-        imgURL: frozenYogurtURL,
-        metersEarned: 200,
-        metersRequired: 1000,
-      },
+      rewards: [
+        {
+          sponsor: "Cupertino Library",
+          name: "Free book",
+          imgURL: catchingFireURL,
+          metersEarned: 2491,
+          metersRequired: 2500,
+        },
+        {
+          sponsor: "Yogurtland",
+          name: "50% off your next cup",
+          imgURL: frozenYogurtURL,
+          metersEarned: 200,
+          metersRequired: 500,
+        },
+        {
+          sponsor: "Starbucks",
+          name: "Free coffee",
+          imgURL: frappucinoURL,
+          metersEarned: 672,
+          metersRequired: 1250,
+        },
+      ],
+      currentRewardIndex: 1,
       page: Pages.Map,
       walkStatus: WalkStatus.Stationary,
       now: Date.now(),
@@ -38,6 +55,7 @@ export default class Mock extends React.Component {
       "onWalkingOutDetectorDeactivated",
       "onWalkingInDetectorActivated",
       "onWalkingInDetectorDeactivated",
+      "onSelectRewardIndex",
     ].forEach((methodName) => {
       this[methodName] = this[methodName].bind(this);
     });
@@ -55,6 +73,8 @@ export default class Mock extends React.Component {
         return this.renderMapPage();
       case Pages.Rewards:
         return this.renderRewardsPage();
+      default:
+        throw new Error("Illegal page: " + this.state.page);
     }
   }
 
@@ -88,31 +108,36 @@ export default class Mock extends React.Component {
   }
 
   renderMapPage() {
+    const currentReward = this.state.rewards[this.state.currentRewardIndex];
     return (
       <div className="Mock">
-        <div className="MeterDisplay">
-          <div className="MeterBarBackground">
-            <div className="MeterNumbers">
-              {Math.floor(this.state.metersWalked)}/{this.state.metersRequired}m
-            </div>
+        {currentReward && (
+          <div className="MeterDisplay">
+            <div className="MeterBarBackground">
+              <div className="MeterNumbers">
+                {Math.min(Math.floor(currentReward.metersEarned), currentReward.metersRequired)}/
+                {currentReward.metersRequired}m
+              </div>
 
-            <div
-              className="MeterBarForeground"
-              style={{
-                width:
-                  (this.state.metersWalked / this.state.metersRequired) * 100 +
-                  "%",
-              }}
-            />
-          </div>
-          {this.state.currentReward && (
+              <div
+                className="MeterBarForeground"
+                style={{
+                  width:
+                    (currentReward.metersEarned /
+                      currentReward.metersRequired) *
+                      100 +
+                    "%",
+                }}
+              />
+            </div>
             <img
               className="MeterRewardImage"
-              src={this.state.currentReward.imgURL}
-              alt={this.state.currentReward.name}
+              src={currentReward.imgURL}
+              alt={currentReward.name}
             />
-          )}
-        </div>
+          </div>
+        )}
+
         <div className="Body">
           {" "}
           <div className="MapContainer">
@@ -148,33 +173,9 @@ export default class Mock extends React.Component {
     return (
       <div className="Mock">
         <div className="RewardsList">
-          <Reward
-            reward={{
-              sponsor: "Cupertino Library",
-              name: "Free book",
-              imgURL: catchingFireURL,
-              metersEarned: 672,
-              metersRequired: 1000,
-            }}
-          />
-          <Reward
-            reward={{
-              sponsor: "Yogurtland",
-              name: "50% off your next cup",
-              imgURL: frozenYogurtURL,
-              metersEarned: 200,
-              metersRequired: 1000,
-            }}
-          />
-          <Reward
-            reward={{
-              sponsor: "Starbucks",
-              name: "Free coffee",
-              imgURL: frappucinoURL,
-              metersEarned: 672,
-              metersRequired: 1000,
-            }}
-          />
+          {this.state.rewards.map((reward, i) => (
+            <Reward reward={reward} onClick={()=>this.onSelectRewardIndex(i)} />
+          ))}
         </div>
         {this.renderNavBar()}
       </div>
@@ -189,10 +190,18 @@ export default class Mock extends React.Component {
         if (prevState.walkStatus === WalkStatus.Out) {
           const dtInSeconds = (now - prevState.now) / 1e3;
           const deltaMeters = METERS_PER_SEC * dtInSeconds;
-          const metersWalked = prevState.metersWalked + deltaMeters;
           return {
             now,
-            metersWalked,
+            rewards: prevState.rewards.map((reward, i) => {
+              if (i !== prevState.currentRewardIndex) {
+                return reward;
+              } else {
+                return {
+                  ...reward,
+                  metersEarned: reward.metersEarned + deltaMeters,
+                };
+              }
+            }),
             markerPosition: {
               lat: prevState.markerPosition.lat + toOutLatitude(deltaMeters),
               lng: prevState.markerPosition.lng + toOutLongitude(deltaMeters),
@@ -204,7 +213,16 @@ export default class Mock extends React.Component {
           const metersWalked = prevState.metersWalked + deltaMeters;
           return {
             now,
-            metersWalked,
+            rewards: prevState.rewards.map((reward, i) => {
+              if (i !== prevState.currentRewardIndex) {
+                return reward;
+              } else {
+                return {
+                  ...reward,
+                  metersEarned: reward.metersEarned + deltaMeters,
+                };
+              }
+            }),
             markerPosition: {
               lat: prevState.markerPosition.lat - toOutLatitude(deltaMeters),
               lng: prevState.markerPosition.lng - toOutLongitude(deltaMeters),
@@ -275,6 +293,12 @@ export default class Mock extends React.Component {
       </div>
     );
   }
+
+  onSelectRewardIndex(index) {
+    this.setState({
+      currentRewardIndex: index,
+    });
+  }
 }
 
 const METERS_PER_SEC = 1.4;
@@ -341,10 +365,13 @@ function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
   );
 }
 
-function Reward({ reward }) {
+function Reward({ reward, onClick }) {
   const { sponsor, name, imgURL, metersEarned, metersRequired } = reward;
   return (
-    <div className="Reward">
+    <div
+      className="Reward"
+      onClick={onClick}
+    >
       <div className="RewardInfoContainer">
         <div className="RewardName">{name}</div>
         <div className="RewardSponsor">{sponsor}</div>
