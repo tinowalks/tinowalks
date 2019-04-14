@@ -271,13 +271,14 @@ export default class Mock extends React.Component {
                 return {
                   ...reward,
                   metersEarned,
-                  FLAG_isAppCelebratingCompletion: true,
+                  alreadyEarned: reward.alreadyEarned || true,
+                  FLAG_rewardJustEarned: !reward.alreadyEarned,
                 };
               }
             }
           });
           const isCelebratingCompletion = rewards.some(
-            (reward) => reward.FLAG_isAppCelebratingCompletion
+            (reward) => reward.FLAG_rewardJustEarned
           );
           const shouldSetTimeout = isCelebratingCompletion && !prevState.hasSetTimeout;
           if (shouldSetTimeout) {
@@ -298,7 +299,7 @@ export default class Mock extends React.Component {
             hasSetTimeout: shouldSetTimeout || isCelebratingCompletion,
             now,
             rewards,
-            isCelebratingCompletion,
+            isCelebratingCompletion: isCelebratingCompletion||prevState.isCelebratingCompletion,
             markerPosition: {
               lat:
                 prevState.markerPosition.lat +
