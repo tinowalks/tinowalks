@@ -69,23 +69,25 @@
   line-height: 5vh;
 }
 
+
 .MeterBarBackground--celebration .MeterBarForeground {
   background-color: green;
   color: #eee;
 }
 
 @keyframes celebration-flash {
+  
   0% {
-    box-shadow: 0 0 4vh 0.5vh orange;
-    background-color: #fa0a;
+    box-shadow: 0 0 4vh 0.5vh var(--shadow);
+    background-color: var(--background);
   }
   50% {
-    box-shadow: 0 0 4vh 4vh orange;
-    background-color: orange;
+    box-shadow: 0 0 4vh 4vh var(--shadow);
+    background-color: var(--background-mid);
   }
   100% {
-    box-shadow: 0 0 4vh 0.5vh orange;
-    background-color: #fa0a;
+    box-shadow: 0 0 4vh 0.5vh var(--shadow);
+    background-color: var(--background);
   }
 }
 
@@ -274,6 +276,7 @@
   height: 10vh;
   right: 2vw;
   top: 0;
+  
   animation: tantalize 4s linear infinite running;
 }
 
@@ -320,6 +323,9 @@
   top: 0;
   z-index: 6;
 
+  --shadow: #aa8;
+  --background: #aa8a;
+  --background-mid: #ddaa;
   animation: expand 4s linear 1 forwards running,
     celebration-flash 0.7s linear infinite running;
 }
