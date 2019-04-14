@@ -21,7 +21,7 @@ export default class Mock extends React.Component {
       rewards: [
         {
           sponsor: "Cupertino Library",
-          name: "Free book",
+          name: "Free book of choice",
           imgURL: catchingFireURL,
           metersEarned: 2499,
           metersRequired: 2500,
