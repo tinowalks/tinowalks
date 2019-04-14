@@ -69,6 +69,11 @@
   line-height: 5vh;
 }
 
+.MeterBarBackground--celebration .MeterBarForeground {
+  background-color: green;
+  color: #eee;
+}
+
 
 @keyframes celebration-flash {
   0% {

@@ -124,11 +124,7 @@ export default class Mock extends React.Component {
           <div className="MeterDisplay">
             <div className="MeterBarBackground MeterBarBackground--celebration">
               <div className="MeterNumbers">
-                {Math.min(
-                  Math.floor(currentReward.metersEarned),
-                  currentReward.metersRequired
-                )}
-                /{currentReward.metersRequired}m
+                Challenge complete!
               </div>
 
               <div
