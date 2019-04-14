@@ -113,7 +113,7 @@
   background-color: orange;
 }
 
-.Event--active  {
+.Event--active {
   background-color: orangered;
 }
 
@@ -136,4 +136,70 @@
 
 .EventTime {
   margin-top: 4vh;
+}
+
+.RewardsList {
+  height: 85.5vh;
+  overflow: auto;
+}
+
+.Reward {
+  background-color: #eee;
+  width: 95vw;
+  height: 30vh;
+  border-radius: 2vh;
+  margin-top: 3vh;
+  margin-bottom: 3vh;
+  margin-left: 2vw;
+  position: relative;
+  overflow: hidden;
+}
+
+.RewardInfoContainer {
+  top: 0;
+  left: 25%;
+  position: absolute;
+}
+
+
+.RewardImage img {
+  margin-top: 4.5vh;
+  margin-left: 1vw;
+  margin-right: 2vw;
+  width: 20vw;
+}
+
+.RewardName {
+  font-size: 5vh;
+  margin-top: 1.5vh;
+}
+
+.RewardSponsor {
+  font-size: 3.5vh;
+}
+
+.RewardProgressBarBackground {
+  height: 5vh;
+  width: 65vw;
+  border-radius: 2vw;
+  margin-top: 5vh;
+  background-color: orangered;
+  position:relative;
+  overflow: hidden;
+  text-align: center;
+  line-height: 5vh;
+}
+
+.RewardProgressBarForeground {
+  height: 5vh;
+  border-radius: 2vw;
+  background-color: orange;
+  position: absolute;
+  top: 0;
+}
+
+.RewardProgressBarNumbers {
+  font-size: 5vh;
+  position: relative;
+  z-index: 1;
 }

@@ -9,6 +9,9 @@ import {
 import hourglassURL from "./images/hourglass.svg";
 import compassURL from "./images/compass.png";
 import trophyURL from "./images/trophy.png";
+import catchingFireURL from "./images/catchingFire.jpg";
+import frozenYogurtURL from "./images/frozenYogurt.png";
+import frappucinoURL from "./images/frappucino.jpg";
 
 export default class Mock extends React.Component {
   constructor() {
@@ -129,47 +132,29 @@ export default class Mock extends React.Component {
   renderRewardsPage() {
     return (
       <div className="Mock">
-        <div className="MeterDisplay">
-          <div className="MeterBarBackground">
-            <div className="MeterNumbers">
-              {Math.floor(this.state.metersWalked)}/{this.state.metersRequired}m
-            </div>
-            <div
-              className="MeterBarForeground"
-              style={{
-                width:
-                  (this.state.metersWalked / this.state.metersRequired) * 100 +
-                  "%",
-              }}
-            />
-          </div>
+        <div className="RewardsList">
+          <Reward
+            sponsor="Cupertino Library"
+            name="Free book"
+            imgURL={catchingFireURL}
+            metersEarned={672}
+            metersRequired={1000}
+          />
+          <Reward
+            sponsor="Yogurtland"
+            name="50% off your next cup"
+            imgURL={frozenYogurtURL}
+            metersEarned={200}
+            metersRequired={1000}
+          />
+          <Reward
+            sponsor="Starbucks"
+            name="Free coffee"
+            imgURL={frappucinoURL}
+            metersEarned={672}
+            metersRequired={1000}
+          />
         </div>
-        <div className="Body">
-          {" "}
-          <div className="MapContainer">
-            <Map
-              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNBvuTeyVOsMmyT1Y3PHtNccpLiiUNuxw"
-              loadingElement={<div style={{ height: `100%` }} />}
-              containerElement={<div style={{ height: `400px` }} />}
-              mapElement={<div style={{ height: `100%` }} />}
-              markerPosition={this.state.markerPosition}
-            />
-          </div>
-        </div>
-        <div
-          className="WalkingOutDetector"
-          onTouchStart={this.onWalkingOutDetectorActivated}
-          onTouchEnd={this.onWalkingOutDetectorDeactivated}
-          onMouseDown={this.onWalkingOutDetectorActivated}
-          onMouseUp={this.onWalkingOutDetectorDeactivated}
-        />
-        <div
-          className="WalkingInDetector"
-          onTouchStart={this.onWalkingInDetectorActivated}
-          onTouchEnd={this.onWalkingInDetectorDeactivated}
-          onMouseDown={this.onWalkingInDetectorActivated}
-          onMouseUp={this.onWalkingInDetectorDeactivated}
-        />
         {this.renderNavBar()}
       </div>
     );
@@ -330,6 +315,31 @@ function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
         <div className="EventDayOfWeek">{dayOfWeek}</div>
         <div className="EventDayDate">{dayDate}</div>
         <div className="EventTime">{time}</div>
+      </div>
+    </div>
+  );
+}
+
+function Reward({ sponsor, name, imgURL, metersEarned, metersRequired }) {
+  return (
+    <div className="Reward">
+      <div className="RewardImage">
+        <img src={imgURL} alt={name} />
+      </div>
+      <div className="RewardInfoContainer">
+        <div className="RewardName">{name}</div>
+        <div className="RewardSponsor">{sponsor}</div>
+        <div className="RewardProgressBarBackground">
+          <div className="RewardProgressBarNumbers">
+          {Math.floor(metersEarned)}/{metersRequired}m</div>
+            <div
+              className="RewardProgressBarForeground"
+              style={{
+                width: (metersEarned / metersRequired) * 100 + "%",
+              }}
+            />
+          
+        </div>
       </div>
     </div>
   );
