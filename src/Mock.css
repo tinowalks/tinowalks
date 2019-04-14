@@ -1,0 +1,52 @@
+.Mock {
+  background-color: #282c34;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.MeterDisplay {
+  height: 10vh;
+  line-height: 10vh;
+  text-align: center;
+  background-color: #111;
+  color: #eee;
+}
+
+.Body {
+  height: 60vh;
+  overflow: auto;
+}
+
+.WalkingOutDetector {
+  height: 15vh;
+  width: 50vw;
+  display: inline-block;
+}
+
+.WalkingInDetector {
+  height: 15vh;
+  width: 50vw;
+  display: inline-block;
+}
+
+.Nav {
+  height: 15vh;
+  width: 100vw;
+  background: #111;
+}
+
+.NavIcon {
+  display: inline-block;
+  width: 33.3vw;
+  text-align: center;
+}
+
+.NavIcon--active {
+  background-color: #1d1d1d;
+}
+
+.NavIcon img {
+  height: 8vh;
+  padding-top: 3.5vh;
+  padding-bottom: 3.5vh;
+}
