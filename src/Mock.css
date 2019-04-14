@@ -73,6 +73,67 @@
   z-index: -1;
 }
 
-.MeterNumbers{ 
+.MeterNumbers {
   font-size: 5vh;
+}
+
+.EventsList {
+  height: 85.5vh;
+  overflow: auto;
+}
+
+.Event {
+  width: 90vw;
+  height: 30vh;
+  background-color: #ee7700;
+  border-radius: 2vh;
+  margin: 3vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.EventBonusContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42%;
+  background-color: tan;
+  line-height: 30vh;
+}
+
+.Event {
+  opacity: 0.3;
+}
+
+.Event--active {
+  opacity: 1;
+}
+
+.Event--active .EventBonusContainer {
+  background-color: orange;
+}
+
+.Event--active  {
+  background-color: orangered;
+}
+
+.EventTimeContainer {
+  position: absolute;
+  top: 0;
+  left: 45%;
+  width: 55%;
+  font-size: 3.5vh;
+  margin-top: 5vh;
+}
+
+.EventBonus {
+  font-size: 9vh;
+}
+
+.EventBonusPlus {
+  font-size: 6vh;
+}
+
+.EventTime {
+  margin-top: 4vh;
 }

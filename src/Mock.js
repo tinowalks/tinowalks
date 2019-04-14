@@ -36,18 +36,112 @@ export default class Mock extends React.Component {
   componentDidMount() {
     this.incrementMetersWalked();
   }
-  // You've traveled:{" "}
-  // {Math.floor(this.state.metersWalked)
-  //   .toString()
-  //   .padStart(5, "0")}
-  // m
+
   render() {
+    switch (this.state.page) {
+      case Pages.Events:
+        return this.renderEventsPage();
+      case Pages.Map:
+        return this.renderMapPage();
+      case Pages.Rewards:
+        return this.renderRewardsPage();
+    }
+  }
+
+  renderEventsPage() {
+    return (
+      <div className="Mock">
+        <div className="EventsList">
+          <BonusEvent
+            isActive
+            dayOfWeek="Sunday,"
+            dayDate="April 14"
+            time="6:00AM to 11:00AM"
+            bonus="10%"
+          />
+          <BonusEvent
+            dayOfWeek="Wednesday,"
+            dayDate="April 17"
+            time="7:00AM to 9:00AM"
+            bonus="50%"
+          />
+          <BonusEvent
+            dayOfWeek="Friday,"
+            dayDate="April 19"
+            time="7:00AM to 8:30AM"
+            bonus="25%"
+          />
+        </div>
+        {this.renderNavBar()}
+      </div>
+    );
+  }
+
+  renderMapPage() {
     return (
       <div className="Mock">
         <div className="MeterDisplay">
           <div className="MeterBarBackground">
-          <div className="MeterNumbers">{Math.floor(this.state.metersWalked)}/{this.state.metersRequired}m</div>
-            <div className="MeterBarForeground" style={{width: this.state.metersWalked / this.state.metersRequired * 100 + '%'}} />
+            <div className="MeterNumbers">
+              {Math.floor(this.state.metersWalked)}/{this.state.metersRequired}m
+            </div>
+            <div
+              className="MeterBarForeground"
+              style={{
+                width:
+                  (this.state.metersWalked / this.state.metersRequired) * 100 +
+                  "%",
+              }}
+            />
+          </div>
+        </div>
+        <div className="Body">
+          {" "}
+          <div className="MapContainer">
+            <Map
+              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNBvuTeyVOsMmyT1Y3PHtNccpLiiUNuxw"
+              loadingElement={<div style={{ height: `100%` }} />}
+              containerElement={<div style={{ height: `400px` }} />}
+              mapElement={<div style={{ height: `100%` }} />}
+              markerPosition={this.state.markerPosition}
+            />
+          </div>
+        </div>
+        <div
+          className="WalkingOutDetector"
+          onTouchStart={this.onWalkingOutDetectorActivated}
+          onTouchEnd={this.onWalkingOutDetectorDeactivated}
+          onMouseDown={this.onWalkingOutDetectorActivated}
+          onMouseUp={this.onWalkingOutDetectorDeactivated}
+        />
+        <div
+          className="WalkingInDetector"
+          onTouchStart={this.onWalkingInDetectorActivated}
+          onTouchEnd={this.onWalkingInDetectorDeactivated}
+          onMouseDown={this.onWalkingInDetectorActivated}
+          onMouseUp={this.onWalkingInDetectorDeactivated}
+        />
+        {this.renderNavBar()}
+      </div>
+    );
+  }
+
+  renderRewardsPage() {
+    return (
+      <div className="Mock">
+        <div className="MeterDisplay">
+          <div className="MeterBarBackground">
+            <div className="MeterNumbers">
+              {Math.floor(this.state.metersWalked)}/{this.state.metersRequired}m
+            </div>
+            <div
+              className="MeterBarForeground"
+              style={{
+                width:
+                  (this.state.metersWalked / this.state.metersRequired) * 100 +
+                  "%",
+              }}
+            />
           </div>
         </div>
         <div className="Body">
@@ -215,3 +309,28 @@ const Pages = {
   Map: 1,
   Rewards: 2,
 };
+
+function BonusEvent({ isActive, dayOfWeek, dayDate, time, bonus }) {
+  return (
+    <div className={isActive ? "Event Event--active" : "Event"}>
+      <div
+        className={
+          isActive
+            ? "EventBonusContainer EventBonusContainer--active"
+            : "EventBonusContainer"
+        }
+      >
+        <div className="EventBonus">
+          <span className="EventBonusPlus">+</span>
+          {bonus}
+        </div>
+      </div>
+
+      <div className="EventTimeContainer">
+        <div className="EventDayOfWeek">{dayOfWeek}</div>
+        <div className="EventDayDate">{dayDate}</div>
+        <div className="EventTime">{time}</div>
+      </div>
+    </div>
+  );
+}
