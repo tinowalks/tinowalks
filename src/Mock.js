@@ -456,7 +456,7 @@ function toOutLatitude(meters) {
 
 const DEG_METER_CONVERSION = 1 / 221200;
 
-const INITIAL_MARKER_POSITION = { lat: 37.325606, lng: -122.042773 };
+const INITIAL_MARKER_POSITION = { lat: 37.315806, lng: -121.998901 };
 
 const WalkStatus = {
   Stationary: 0,
@@ -464,7 +464,7 @@ const WalkStatus = {
   In: 2,
 };
 
-const OUT_DIR = 0.8 * Math.PI;
+const OUT_DIR = 0.5 * Math.PI;
 
 const Pages = {
   Events: 0,
