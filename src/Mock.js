@@ -41,6 +41,7 @@ export default class Mock extends React.Component {
           metersRequired: 1250,
         },
       ],
+      navBarLift: 0,
       currentRewardIndex: 0,
       hasSetTimeout: false,
       isCelebratingCompletion: false,
@@ -56,6 +57,9 @@ export default class Mock extends React.Component {
       "onWalkingInDetectorActivated",
       "onWalkingInDetectorDeactivated",
       "onSelectRewardIndex",
+      'onStartPossibleNavLift',
+      'onMovePossibleNavLift',
+      'onEndPossibleNavLift',
     ].forEach((methodName) => {
       this[methodName] = this[methodName].bind(this);
     });
@@ -352,7 +356,7 @@ export default class Mock extends React.Component {
 
   renderNavBar() {
     return (
-      <div className="Nav">
+      <div className="Nav" onTouchStart={this.onStartPossibleNavLift} onTouchMove={this.onMovePossibleNavLift} onEnd={this.onEndPossibleNavLift}>
         <div
           className={
             this.state.page === Pages.Events
@@ -391,6 +395,30 @@ export default class Mock extends React.Component {
     this.setState({
       currentRewardIndex: index,
     });
+  }
+
+  onStartPossibleNavLift(e) {
+    const [touch] = e.changedTouches;
+    this.setState({previousTouch:touch})
+  }
+
+  onMovePossibleNavLift(e) {
+const [touch] = e.changedTouches;
+const dx = touch.clientX - this.state.previousTouch.clientX;
+const dy = invertDeltaY(touch.clientY - this.state.previousTouch.clientY);
+const angle = Math.atan(dy/dx);
+if (isLift(angle) || this.state.navBarLift) {
+this.setState(prevState=>({
+  previousTouch:touch,
+navBarLift:prevState.navBarLift+dy
+}))
+} else {
+  this.setState({previousTouch: touch})
+}
+  }
+
+  onEndPossibleNavLift() {
+this.setState({previousTouch: null,navBarLift:0})
   }
 }
 
@@ -515,3 +543,12 @@ function Checkmark() {
   return <span className="Checkmark">✓</span>;
 }
 
+function invertDeltaY(y) {
+  return -y;
+}
+
+function isLift(angle) {
+  return Math.abs(angle) > LIFT_THRESHOLD_ANGLE;
+}
+
+const LIFT_THRESHOLD_ANGLE = 0.4 * Math.PI;
