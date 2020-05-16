@@ -1,21 +1,20 @@
+import leaflet from "leaflet";
 import React from "react";
-import "./Mock.css";
-import {
-  GoogleMap,
-  Marker,
-  withGoogleMap,
-  withScriptjs,
-} from "react-google-maps";
-import hourglassURL from "./images/hourglass.svg";
-import compassURL from "./images/compass.png";
-import trophyURL from "./images/trophy.png";
 import catchingFireURL from "./images/catchingFire.png";
-import frozenYogurtURL from "./images/frozenYogurt.png";
+import compassURL from "./images/compass.png";
 import frappuccinoURL from "./images/frappuccino.png";
+import frozenYogurtURL from "./images/frozenYogurt.png";
+import hourglassURL from "./images/hourglass.svg";
+import trophyURL from "./images/trophy.png";
+import "./leafletStyles/index.css";
+import { currentMarkerIcon } from "./markerIcons";
+import "./Mock.css";
 
 export default class Mock extends React.Component {
   constructor() {
     super();
+
+    this.mapRef = React.createRef();
 
     this.state = {
       rewards: [
@@ -57,9 +56,9 @@ export default class Mock extends React.Component {
       "onWalkingInDetectorActivated",
       "onWalkingInDetectorDeactivated",
       "onSelectRewardIndex",
-      'onStartPossibleNavLift',
-      'onMovePossibleNavLift',
-      'onEndPossibleNavLift',
+      "onStartPossibleNavLift",
+      "onMovePossibleNavLift",
+      "onEndPossibleNavLift",
     ].forEach((methodName) => {
       this[methodName] = this[methodName].bind(this);
     });
@@ -67,6 +66,38 @@ export default class Mock extends React.Component {
 
   componentDidMount() {
     this.incrementMetersWalked();
+  }
+
+  componentDidUpdate() {
+    if (this.mapRef && this.mapRef.current) {
+      if (this.currentMarker === undefined) {
+        const currentMarker = leaflet.marker(
+          [this.state.markerPosition.lat, this.state.markerPosition.lng],
+          {
+            title: "Current location",
+            icon: currentMarkerIcon,
+          }
+        );
+
+        leaflet.map(this.mapRef.current, {
+          center: [INITIAL_MARKER_POSITION.lat, INITIAL_MARKER_POSITION.lng],
+          zoom: 13,
+          layers: [
+            leaflet.tileLayer(
+              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            ),
+            currentMarker,
+          ],
+        });
+
+        this.currentMarker = currentMarker;
+      } else {
+        this.currentMarker.setLatLng([
+          this.state.markerPosition.lat,
+          this.state.markerPosition.lng,
+        ]);
+      }
+    }
   }
 
   render() {
@@ -153,16 +184,10 @@ export default class Mock extends React.Component {
         <div className="Body Body--celebration">
           <div className="CelebrationBodyOverlay" />
           <div className="MapContainer">
-            <Map
-              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNBvuTeyVOsMmyT1Y3PHtNccpLiiUNuxw"
-              loadingElement={<div style={{ height: `100%` }} />}
-              containerElement={<div style={{ height: `400px` }} />}
-              mapElement={<div style={{ height: `100%` }} />}
-              markerPosition={this.state.markerPosition}
-            />
+            <div className="LeafletMap" ref={this.mapRef} />
           </div>
         </div>
-        
+
         {this.renderNavBar()}
       </div>
     );
@@ -204,30 +229,24 @@ export default class Mock extends React.Component {
 
         <div className="Body">
           <div className="MapContainer">
-            <Map
-              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNBvuTeyVOsMmyT1Y3PHtNccpLiiUNuxw"
-              loadingElement={<div style={{ height: `100%` }} />}
-              containerElement={<div style={{ height: `400px` }} />}
-              mapElement={<div style={{ height: `100%` }} />}
-              markerPosition={this.state.markerPosition}
-            />
+            <div className="LeafletMap" ref={this.mapRef} />
           </div>
           <div
-          className="WalkingOutDetector"
-          onTouchStart={this.onWalkingOutDetectorActivated}
-          onTouchEnd={this.onWalkingOutDetectorDeactivated}
-          onMouseDown={this.onWalkingOutDetectorActivated}
-          onMouseUp={this.onWalkingOutDetectorDeactivated}
-        />
-        <div
-          className="WalkingInDetector"
-          onTouchStart={this.onWalkingInDetectorActivated}
-          onTouchEnd={this.onWalkingInDetectorDeactivated}
-          onMouseDown={this.onWalkingInDetectorActivated}
-          onMouseUp={this.onWalkingInDetectorDeactivated}
-        />
+            className="WalkingOutDetector"
+            onTouchStart={this.onWalkingOutDetectorActivated}
+            onTouchEnd={this.onWalkingOutDetectorDeactivated}
+            onMouseDown={this.onWalkingOutDetectorActivated}
+            onMouseUp={this.onWalkingOutDetectorDeactivated}
+          />
+          <div
+            className="WalkingInDetector"
+            onTouchStart={this.onWalkingInDetectorActivated}
+            onTouchEnd={this.onWalkingInDetectorDeactivated}
+            onMouseDown={this.onWalkingInDetectorActivated}
+            onMouseUp={this.onWalkingInDetectorDeactivated}
+          />
         </div>
-        
+
         {this.renderNavBar()}
       </div>
     );
@@ -256,8 +275,6 @@ export default class Mock extends React.Component {
 
       const now = Date.now();
       this.setState((prevState) => {
-        
-
         if (
           prevState.walkStatus === WalkStatus.Out ||
           prevState.walkStatus === WalkStatus.In
@@ -284,9 +301,9 @@ export default class Mock extends React.Component {
           const isCelebratingCompletion = rewards.some(
             (reward) => reward.FLAG_rewardJustEarned
           );
-          const shouldSetTimeout = isCelebratingCompletion && !prevState.hasSetTimeout;
+          const shouldSetTimeout =
+            isCelebratingCompletion && !prevState.hasSetTimeout;
           if (shouldSetTimeout) {
-            
             setTimeout(() => {
               this.setState((prevState) => ({
                 hasSetTimeout: false,
@@ -303,7 +320,8 @@ export default class Mock extends React.Component {
             hasSetTimeout: shouldSetTimeout || isCelebratingCompletion,
             now,
             rewards,
-            isCelebratingCompletion: isCelebratingCompletion||prevState.isCelebratingCompletion,
+            isCelebratingCompletion:
+              isCelebratingCompletion || prevState.isCelebratingCompletion,
             markerPosition: {
               lat:
                 prevState.markerPosition.lat +
@@ -319,7 +337,7 @@ export default class Mock extends React.Component {
           };
         } else {
           if (prevState.currentRewardIndex !== this.state.currentRewardIndex) {
-            console.log('bang')
+            console.log("bang");
           }
           return { ...prevState, now };
         }
@@ -351,12 +369,16 @@ export default class Mock extends React.Component {
         this.setState({ page });
       };
     }
-    
   }
 
   renderNavBar() {
     return (
-      <div className="Nav" onTouchStart={this.onStartPossibleNavLift} onTouchMove={this.onMovePossibleNavLift} onEnd={this.onEndPossibleNavLift}>
+      <div
+        className="Nav"
+        onTouchStart={this.onStartPossibleNavLift}
+        onTouchMove={this.onMovePossibleNavLift}
+        onTouchEnd={this.onEndPossibleNavLift}
+      >
         <div
           className={
             this.state.page === Pages.Events
@@ -399,41 +421,30 @@ export default class Mock extends React.Component {
 
   onStartPossibleNavLift(e) {
     const [touch] = e.changedTouches;
-    this.setState({previousTouch:touch})
+    this.setState({ previousTouch: touch });
   }
 
   onMovePossibleNavLift(e) {
-const [touch] = e.changedTouches;
-const dx = touch.clientX - this.state.previousTouch.clientX;
-const dy = invertDeltaY(touch.clientY - this.state.previousTouch.clientY);
-const angle = Math.atan(dy/dx);
-if (isLift(angle) || this.state.navBarLift) {
-this.setState(prevState=>({
-  previousTouch:touch,
-navBarLift:prevState.navBarLift+dy
-}))
-} else {
-  this.setState({previousTouch: touch})
-}
+    const [touch] = e.changedTouches;
+    const dx = touch.clientX - this.state.previousTouch.clientX;
+    const dy = invertDeltaY(touch.clientY - this.state.previousTouch.clientY);
+    const angle = Math.atan(dy / dx);
+    if (isLift(angle) || this.state.navBarLift) {
+      this.setState((prevState) => ({
+        previousTouch: touch,
+        navBarLift: prevState.navBarLift + dy,
+      }));
+    } else {
+      this.setState({ previousTouch: touch });
+    }
   }
 
   onEndPossibleNavLift() {
-this.setState({previousTouch: null,navBarLift:0})
+    this.setState({ previousTouch: null, navBarLift: 0 });
   }
 }
 
 const METERS_PER_SEC = 1.4;
-
-const Map = withScriptjs(
-  withGoogleMap(({ markerPosition }) => (
-    <GoogleMap
-      defaultZoom={18}
-      defaultCenter={INITIAL_MARKER_POSITION}
-    >
-      {<Marker position={markerPosition} />}
-    </GoogleMap>
-  ))
-);
 
 function toOutLongitude(meters) {
   return Math.cos(OUT_DIR) * meters * DEG_METER_CONVERSION;

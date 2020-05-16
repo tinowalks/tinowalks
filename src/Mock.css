@@ -69,14 +69,12 @@
   line-height: 5vh;
 }
 
-
 .MeterBarBackground--celebration .MeterBarForeground {
   background-color: green;
   color: #eee;
 }
 
 @keyframes celebration-flash {
-  
   0% {
     box-shadow: 0 0 4vh 0.5vh var(--shadow);
     background-color: var(--background);
@@ -163,7 +161,7 @@
 }
 
 .EventSponsor {
-  color:#000;
+  color: #000;
 }
 
 .EventDayOfWeek {
@@ -276,7 +274,7 @@
   height: 10vh;
   right: 2vw;
   top: 0;
-  
+
   animation: tantalize 4s linear infinite running;
 }
 
@@ -442,7 +440,8 @@
   margin-left: 1vw;
 }
 
-.MapContainer {
+.MapContainer,
+.LeafletMap {
   height: 60vh;
   overflow: hidden;
 }
