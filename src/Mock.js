@@ -122,23 +122,23 @@ export default class Mock extends React.Component {
         <div className="EventsList">
           <BonusEvent
             isActive
-            sponsor="Sports Basement"
-            dayOfWeek="Sunday,"
-            dayDate="April 14"
-            time="6:00AM to 11:00AM"
-            bonus="10%"
+            sponsor="Cupertino High School"
+            dayOfWeek="Wednesday,"
+            dayDate="May 18"
+            time="3:25PM to 4:30PM"
+            bonus="30%"
           />
           <BonusEvent
             sponsor="Cupertino High School"
             dayOfWeek="Wednesday,"
-            dayDate="April 17"
+            dayDate="May 20"
             time="7:00AM to 9:00AM"
             bonus="50%"
           />
           <BonusEvent
             sponsor="AMC"
             dayOfWeek="Friday,"
-            dayDate="April 19"
+            dayDate="May 22"
             time="7:00AM to 8:30AM"
             bonus="25%"
           />
