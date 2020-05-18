@@ -70,7 +70,10 @@ export default class Mock extends React.Component {
 
   componentDidUpdate() {
     if (this.mapRef && this.mapRef.current) {
-      if (this.currentMarker === undefined) {
+      if (
+        this.currentMarker === undefined ||
+        this.mapRef.current.children.length === 0
+      ) {
         const currentMarker = leaflet.marker(
           [this.state.markerPosition.lat, this.state.markerPosition.lng],
           {
